@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics, type BeforeSendEvent } from '@vercel/analytics/next'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -23,7 +23,7 @@ export default function RootLayout({
         {children}
         <Analytics
           debug={process.env.NODE_ENV !== 'production'}
-          beforeSend={(event: BeforeSendEvent) => {
+          beforeSend={(event) => {
             if (event.url.includes('/private')) {
               if (process.env.NODE_ENV !== 'production') {
                 console.log('[Analytics] Ignored event for private path', event)
