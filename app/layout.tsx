@@ -32,6 +32,7 @@ export default function RootLayout({
             }
             if (process.env.NODE_ENV !== 'production') {
               console.log('[Analytics] Sending event', event)
+              console.log('event', event);
             }
             return event
           }}
