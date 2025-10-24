@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowRight } from "lucide-react"
 import { useState } from "react"
+import { submitLead } from "@/app/actions/lead"
+import { toast } from "sonner"
 
 export function FeaturedBanner() {
   const [open, setOpen] = useState(false)
@@ -18,17 +20,33 @@ export function FeaturedBanner() {
     // 핵심 로그: 사용자가 신청 모달에서 제출 시도
     console.log("[EnrollModal] submit_clicked", { name, email })
     setSubmitting(true)
+    
     try {
-      // Notion 연동 전까지는 로컬 로그만 남김
-      // 추후 /api/lead 로 POST 예정
-      // await fetch('/api/lead', { method: 'POST', body: JSON.stringify({ name, email }) })
-      await new Promise((r) => setTimeout(r, 600))
-      console.log("[EnrollModal] submit_success")
-      setOpen(false)
-      setName("")
-      setEmail("")
+      // 서버 액션 호출하여 노션에 저장
+      const result = await submitLead(name, email)
+      
+      if (result.success) {
+        // 핵심 로그: 저장 성공
+        console.log("[EnrollModal] submit_success", { name, email })
+        toast.success("강의 신청이 완료되었습니다!", {
+          description: "빠른 시일 내에 연락드리겠습니다.",
+        })
+        setOpen(false)
+        setName("")
+        setEmail("")
+      } else {
+        // 핵심 로그: 저장 실패
+        console.error("[EnrollModal] submit_failed", { error: result.error })
+        toast.error("신청 실패", {
+          description: result.error || "알 수 없는 오류가 발생했습니다.",
+        })
+      }
     } catch (err) {
+      // 핵심 로그: 예외 발생
       console.error("[EnrollModal] submit_error", err)
+      toast.error("신청 실패", {
+        description: "네트워크 오류가 발생했습니다. 다시 시도해주세요.",
+      })
     } finally {
       setSubmitting(false)
     }
