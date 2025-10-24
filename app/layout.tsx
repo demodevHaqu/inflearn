@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+import AnalyticsClient from '@/components/analytics'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -21,22 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans antialiased`}>
         {children}
-        <Analytics
-          debug={process.env.NODE_ENV !== 'production'}
-          beforeSend={(event) => {
-            if (event.url.includes('/private')) {
-              if (process.env.NODE_ENV !== 'production') {
-                console.log('[Analytics] Ignored event for private path', event)
-              }
-              return null
-            }
-            if (process.env.NODE_ENV !== 'production') {
-              console.log('[Analytics] Sending event', event)
-              console.log('event', event);
-            }
-            return event
-          }}
-        />
+        <AnalyticsClient />
       </body>
     </html>
   )
