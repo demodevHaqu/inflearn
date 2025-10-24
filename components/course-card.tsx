@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 interface CourseCardProps {
+  id?: string
   title: string
   instructor: string
   thumbnail: string
@@ -16,6 +17,7 @@ interface CourseCardProps {
 }
 
 export function CourseCard({
+  id,
   title,
   instructor,
   thumbnail,
