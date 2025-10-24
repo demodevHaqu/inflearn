@@ -21,6 +21,15 @@
   font-display: swap;
 }
 
+/* Yeongwol 폰트 */
+@font-face {
+  font-family: 'Yeongwol';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2507-2@1.0/YeongwolTTF-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: oklch(0.99 0 0);
   --foreground: oklch(0.15 0 0);
@@ -93,7 +102,7 @@
 }
 
 @theme inline {
-  --font-sans: "Geist", "Geist Fallback";
+  --font-sans: "Yeongwol", "Geist", "Geist Fallback";
   --font-mono: "Geist Mono", "Geist Mono Fallback";
   --font-jalnan: "Jalnan", sans-serif;
   --font-ongleip: "OngleipParkDahyeon", sans-serif;
@@ -141,6 +150,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'OngleipParkDahyeon';
+    font-family: 'Yeongwol', "Geist", "Geist Fallback", sans-serif;
   }
 }

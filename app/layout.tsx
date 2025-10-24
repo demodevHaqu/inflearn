@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import AnalyticsClient from '@/components/analytics'
+import FontLogger from '@/components/font-logger'
 import { Toaster } from 'sonner'
 import './globals.css'
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         {children}
         <Toaster position="top-center" richColors />
         <AnalyticsClient />
+        <FontLogger />
       </body>
     </html>
   )
