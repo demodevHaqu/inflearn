@@ -2,14 +2,17 @@ import { Star, Users, Clock, Award, Globe, BarChart } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { YouTubePlayer } from "@/components/youtube-player"
 import type { Course } from "@/lib/types"
 
 interface CourseDetailHeroProps {
   course: Course
+  youtubeVideoId?: string
 }
 
-export function CourseDetailHero({ course }: CourseDetailHeroProps) {
+export function CourseDetailHero({ course, youtubeVideoId }: CourseDetailHeroProps) {
   console.log('[CourseDetailHero] 렌더링:', course.title)
+  console.log('[CourseDetailHero] YouTube 영상 ID:', youtubeVideoId)
   
   return (
     <div className="border-b bg-gradient-to-br from-primary/5 via-background to-background">
@@ -80,11 +83,19 @@ export function CourseDetailHero({ course }: CourseDetailHeroProps) {
           <div className="lg:sticky lg:top-20 lg:self-start">
             <Card className="overflow-hidden">
               <div className="relative aspect-video bg-muted">
-                <img
-                  src={course.thumbnail}
-                  alt={course.title}
-                  className="h-full w-full object-cover"
-                />
+                {youtubeVideoId ? (
+                  <YouTubePlayer 
+                    videoId={youtubeVideoId} 
+                    title={course.title}
+                    className="rounded-t-lg"
+                  />
+                ) : (
+                  <img
+                    src={course.thumbnail}
+                    alt={course.title}
+                    className="h-full w-full object-cover"
+                  />
+                )}
               </div>
               <div className="p-6">
                 <div className="mb-6">

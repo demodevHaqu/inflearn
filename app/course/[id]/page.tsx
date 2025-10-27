@@ -7,6 +7,7 @@ import { CourseInstructor } from "@/components/course-instructor"
 import { CourseReviews } from "@/components/course-reviews"
 import { CourseRecommended } from "@/components/course-recommended"
 import { getCourseById, getRecommendedCourses } from "@/lib/mock-data"
+import { getChannelVideos } from "@/lib/youtube"
 
 interface CoursePageProps {
   params: Promise<{ id: string }>
@@ -26,6 +27,22 @@ export default async function CoursePage({ params }: CoursePageProps) {
   }
 
   const recommendedCourses = getRecommendedCourses(course.id)
+  
+  // YouTube 채널에서 최신 영상 가져오기
+  let youtubeVideoId: string | undefined
+  try {
+    console.log('[CoursePage] YouTube 영상 가져오기 시작')
+    const videos = await getChannelVideos(1) // 최신 영상 1개만
+    if (videos.length > 0) {
+      youtubeVideoId = videos[0].id
+      console.log('[CoursePage] YouTube 영상 ID:', youtubeVideoId)
+      console.log('[CoursePage] YouTube 영상 제목:', videos[0].title)
+    } else {
+      console.log('[CoursePage] YouTube 영상을 찾을 수 없습니다')
+    }
+  } catch (error) {
+    console.error('[CoursePage] YouTube 영상 가져오기 실패:', error)
+  }
 
   console.log('[CoursePage] 강의 로딩 완료:', course.title)
 
@@ -34,7 +51,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
       <Header />
       
       {/* Hero 섹션 */}
-      <CourseDetailHero course={course} />
+      <CourseDetailHero course={course} youtubeVideoId={youtubeVideoId} />
 
       {/* 메인 콘텐츠 */}
       <div className="container py-12">

@@ -25,6 +25,8 @@ export interface Course {
   lastUpdated?: string
   language?: string
   certificate?: boolean
+  // YouTube 영상 ID
+  youtubeVideoId?: string
 }
 
 export interface CourseCurriculum {

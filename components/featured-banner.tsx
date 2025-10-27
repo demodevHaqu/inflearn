@@ -58,7 +58,7 @@ export function FeaturedBanner() {
           <h1 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl text-balance">
             성장을 위한
             <br />
-            <span className="text-primary">최고의 온라인 강의</span>
+            <span className="text-primary">대모산 개발단</span>
           </h1>
           <p className="mb-8 text-lg text-muted-foreground md:text-xl text-pretty">
             개발부터 디자인, 마케팅까지. 실무 전문가의 검증된 강의로 당신의 커리어를 성장시키세요.
