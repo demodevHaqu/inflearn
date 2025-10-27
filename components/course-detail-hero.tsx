@@ -20,6 +20,17 @@ export function CourseDetailHero({ course, youtubeVideoId }: CourseDetailHeroPro
         <div className="grid gap-8 lg:grid-cols-3">
           {/* 왼쪽: 강의 정보 */}
           <div className="lg:col-span-2">
+            {/* YouTube 영상 */}
+            {youtubeVideoId && (
+              <div className="mb-6">
+                <YouTubePlayer 
+                  videoId={youtubeVideoId} 
+                  title={course.title}
+                  className="shadow-lg"
+                />
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-2 mb-4">
               {course.tags?.map((tag) => (
                 <Badge key={tag} variant="secondary">
@@ -83,19 +94,11 @@ export function CourseDetailHero({ course, youtubeVideoId }: CourseDetailHeroPro
           <div className="lg:sticky lg:top-20 lg:self-start">
             <Card className="overflow-hidden">
               <div className="relative aspect-video bg-muted">
-                {youtubeVideoId ? (
-                  <YouTubePlayer 
-                    videoId={youtubeVideoId} 
-                    title={course.title}
-                    className="rounded-t-lg"
-                  />
-                ) : (
-                  <img
-                    src={course.thumbnail}
-                    alt={course.title}
-                    className="h-full w-full object-cover"
-                  />
-                )}
+                <img
+                  src={course.thumbnail}
+                  alt={course.title}
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="p-6">
                 <div className="mb-6">
