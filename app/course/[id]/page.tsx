@@ -28,15 +28,22 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   const recommendedCourses = getRecommendedCourses(course.id)
   
-  // YouTube 채널에서 최신 영상 가져오기
+  // YouTube 채널에서 여러 영상 가져와서 랜덤 선택
   let youtubeVideoId: string | undefined
   try {
     console.log('[CoursePage] YouTube 영상 가져오기 시작')
-    const videos = await getChannelVideos(1) // 최신 영상 1개만
+    const videos = await getChannelVideos(20) // 최신 영상 20개 가져오기
+    console.log('[CoursePage] 가져온 영상 개수:', videos.length)
+    
     if (videos.length > 0) {
-      youtubeVideoId = videos[0].id
+      // 랜덤으로 영상 선택
+      const randomIndex = Math.floor(Math.random() * videos.length)
+      const selectedVideo = videos[randomIndex]
+      youtubeVideoId = selectedVideo.id
+      
+      console.log('[CoursePage] 랜덤 선택된 영상 인덱스:', randomIndex)
       console.log('[CoursePage] YouTube 영상 ID:', youtubeVideoId)
-      console.log('[CoursePage] YouTube 영상 제목:', videos[0].title)
+      console.log('[CoursePage] YouTube 영상 제목:', selectedVideo.title)
     } else {
       console.log('[CoursePage] YouTube 영상을 찾을 수 없습니다')
     }
