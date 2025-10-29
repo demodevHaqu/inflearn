@@ -106,3 +106,18 @@ export interface Order {
   updatedAt: string
 }
 
+/**
+ * 로드맵 타입
+ */
+export interface Roadmap {
+  id: string
+  title: string
+  description: string
+  image: string
+  color: string
+  courses?: Course[]
+  estimatedDuration?: string
+  difficulty?: 'beginner' | 'intermediate' | 'advanced'
+  tags?: string[]
+}
+

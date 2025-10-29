@@ -1,4 +1,4 @@
-import { Course } from './types'
+import { Course, Roadmap } from './types'
 
 /**
  * Mock 강의 데이터
@@ -485,5 +485,72 @@ export function getRecommendedCourses(currentCourseId: string): Course[] {
   return mockCourses
     .filter(course => course.id !== currentCourseId)
     .slice(0, 4)
+}
+
+/**
+ * Mock 로드맵 데이터
+ * Figma 디자인 기반으로 생성
+ */
+export const mockRoadmaps: Roadmap[] = [
+  {
+    id: "1",
+    title: "AI Prompt Engineering",
+    description: "Master the art of crafting effective prompts for AI models like GPT-3 and beyond.",
+    image: "/ai-chatgpt-prompt.jpg",
+    color: "#617AFA",
+    estimatedDuration: "3-6개월",
+    difficulty: "beginner",
+    tags: ["AI", "ChatGPT", "프롬프트"],
+    courses: mockCourses.filter(course => course.tags?.includes("AI"))
+  },
+  {
+    id: "2", 
+    title: "UI/UX Design Introduction",
+    description: "Learn the fundamentals of UI/UX design, from user research to prototyping.",
+    image: "/figma-ui-ux-design.jpg",
+    color: "#A3DA24",
+    estimatedDuration: "4-8개월",
+    difficulty: "beginner",
+    tags: ["UI/UX", "Figma", "디자인"],
+    courses: mockCourses.filter(course => course.tags?.includes("UI/UX") || course.tags?.includes("Figma"))
+  },
+  {
+    id: "3",
+    title: "Node.js Backend Development", 
+    description: "Build scalable and efficient backend systems using Node.js and Express.",
+    image: "/nodejs-backend-development.jpg",
+    color: "#F44949",
+    estimatedDuration: "6-12개월",
+    difficulty: "intermediate",
+    tags: ["Node.js", "Backend", "API"],
+    courses: mockCourses.filter(course => course.tags?.includes("Node.js") || course.tags?.includes("Backend"))
+  },
+  {
+    id: "4",
+    title: "SQL Database",
+    description: "Understand SQL databases, from basic queries to advanced database management.",
+    image: "/sql-database-design.jpg", 
+    color: "#9E8573",
+    estimatedDuration: "2-4개월",
+    difficulty: "intermediate",
+    tags: ["SQL", "Database", "데이터베이스"],
+    courses: mockCourses.filter(course => course.tags?.includes("SQL") || course.tags?.includes("Database"))
+  }
+]
+
+/**
+ * 모든 로드맵 가져오기
+ */
+export function getAllRoadmaps(): Roadmap[] {
+  console.log('[Mock Data] 로드맵 목록 조회')
+  return mockRoadmaps
+}
+
+/**
+ * ID로 로드맵 찾기
+ */
+export function getRoadmapById(id: string): Roadmap | undefined {
+  console.log('[Mock Data] 로드맵 조회:', id)
+  return mockRoadmaps.find(roadmap => roadmap.id === id)
 }
 
