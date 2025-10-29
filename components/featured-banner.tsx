@@ -80,7 +80,7 @@ export function FeaturedBanner() {
           <DialogHeader>
             <DialogTitle>강의 신청</DialogTitle>
             <DialogDescription>
-              노션 데이터베이스로 저장할 정보를 입력해주세요.
+              강의 신청 정보를 입력해주세요.
             </DialogDescription>
           </DialogHeader>
 

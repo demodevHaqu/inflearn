@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
+import { supabaseAdmin } from "@/lib/supabase"
 
-// 노션 연동 전 스텁: 요청/응답 및 핵심 로그만 처리
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -13,12 +13,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "INVALID_INPUT" }, { status: 400 })
     }
 
-    // TODO: 노션 SDK 연동 (databases.createPage 등)
-    // const notion = new Client({ auth: process.env.NOTION_TOKEN })
-    // await notion.pages.create({ ... })
+    // Supabase에 데이터 저장
+    const { data, error } = await supabaseAdmin
+      .from('leads')
+      .insert([
+        {
+          name: name.trim(),
+          email: email.trim().toLowerCase()
+        }
+      ])
+      .select()
 
-    console.log("[API:/api/lead] success")
-    return NextResponse.json({ ok: true })
+    if (error) {
+      console.error("[API:/api/lead] supabase_error", error)
+      
+      // 이메일 중복 에러 처리
+      if (error.code === '23505') {
+        return NextResponse.json({ ok: false, error: "EMAIL_EXISTS" }, { status: 409 })
+      }
+      
+      return NextResponse.json({ ok: false, error: "DATABASE_ERROR" }, { status: 500 })
+    }
+
+    console.log("[API:/api/lead] success", { id: data?.[0]?.id })
+    return NextResponse.json({ ok: true, data: data?.[0] })
   } catch (error) {
     console.error("[API:/api/lead] error", error)
     return NextResponse.json({ ok: false, error: "INTERNAL_ERROR" }, { status: 500 })

@@ -1,11 +1,6 @@
 'use server'
 
-import { Client } from '@notionhq/client'
-
-// 노션 클라이언트 초기화
-const notion = new Client({
-  auth: process.env.NOTION_API_KEY,
-})
+import { supabaseAdmin } from '@/lib/supabase'
 
 export interface LeadSubmitResult {
   success: boolean
@@ -13,7 +8,7 @@ export interface LeadSubmitResult {
 }
 
 /**
- * 강의 신청 정보를 노션 데이터베이스에 저장하는 서버 액션
+ * 강의 신청 정보를 Supabase 데이터베이스에 저장하는 서버 액션
  * @param name - 신청자 이름
  * @param email - 신청자 이메일
  */
@@ -45,12 +40,12 @@ export async function submitLead(
     }
 
     // 환경변수 확인
-    if (!process.env.NOTION_API_KEY || !process.env.NOTION_DATABASE_ID) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       console.error(
         '[ServerAction:submitLead] 환경변수 누락',
         {
-          hasApiKey: !!process.env.NOTION_API_KEY,
-          hasDatabaseId: !!process.env.NOTION_DATABASE_ID,
+          hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+          hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
         }
       )
       return {
@@ -59,35 +54,40 @@ export async function submitLead(
       }
     }
 
-    // 핵심 로그: 노션 API 호출 시작
-    console.log('[ServerAction:submitLead] 노션 API 호출 시작', {
-      databaseId: process.env.NOTION_DATABASE_ID,
-    })
+    // 핵심 로그: Supabase API 호출 시작
+    console.log('[ServerAction:submitLead] Supabase API 호출 시작')
 
-    // 노션 데이터베이스에 페이지 생성
-    const response = await notion.pages.create({
-      parent: {
-        database_id: process.env.NOTION_DATABASE_ID,
-      },
-      properties: {
-        '이름': {
-          title: [
-            {
-              text: {
-                content: name,
-              },
-            },
-          ],
-        },
-        '이메일': {
-          email: email,
-        },
-      },
-    })
+    // Supabase에 데이터 저장
+    const { data, error } = await supabaseAdmin
+      .from('leads')
+      .insert([
+        {
+          name: name.trim(),
+          email: email.trim().toLowerCase()
+        }
+      ])
+      .select()
 
-    // 핵심 로그: 노션 API 성공
-    console.log('[ServerAction:submitLead] 노션 저장 성공', {
-      pageId: response.id,
+    if (error) {
+      console.error('[ServerAction:submitLead] Supabase 에러', { error })
+      
+      // 이메일 중복 에러 처리
+      if (error.code === '23505') {
+        return {
+          success: false,
+          error: '이미 신청된 이메일입니다.',
+        }
+      }
+      
+      return {
+        success: false,
+        error: '데이터베이스 저장 중 오류가 발생했습니다.',
+      }
+    }
+
+    // 핵심 로그: Supabase 저장 성공
+    console.log('[ServerAction:submitLead] Supabase 저장 성공', {
+      id: data?.[0]?.id,
       name,
       email,
     })
