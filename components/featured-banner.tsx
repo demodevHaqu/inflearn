@@ -13,27 +13,29 @@ export function FeaturedBanner() {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [submitting, setSubmitting] = useState(false)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     // 핵심 로그: 사용자가 신청 모달에서 제출 시도
-    console.log("[EnrollModal] submit_clicked", { name, email })
+    console.log("[EnrollModal] submit_clicked", { name, email, phone })
     setSubmitting(true)
     
     try {
-      // 서버 액션 호출하여 노션에 저장
-      const result = await submitLead(name, email)
+      // 서버 액션 호출하여 Supabase에 저장
+      const result = await submitLead(name, email, phone)
       
       if (result.success) {
         // 핵심 로그: 저장 성공
-        console.log("[EnrollModal] submit_success", { name, email })
+        console.log("[EnrollModal] submit_success", { name, email, phone })
         toast.success("강의 신청이 완료되었습니다!", {
           description: "빠른 시일 내에 연락드리겠습니다.",
         })
         setOpen(false)
         setName("")
         setEmail("")
+        setPhone("")
       } else {
         // 핵심 로그: 저장 실패
         console.error("[EnrollModal] submit_failed", { error: result.error })
@@ -92,6 +94,10 @@ export function FeaturedBanner() {
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">이메일</Label>
               <Input id="email" type="email" placeholder="user@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="phone">전화번호</Label>
+              <Input id="phone" type="tel" placeholder="010-1234-5678" value={phone} onChange={(e) => setPhone(e.target.value)} required />
             </div>
             <DialogFooter>
               <Button type="submit" disabled={submitting}>

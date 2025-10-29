@@ -4,11 +4,11 @@ import { supabaseAdmin } from "@/lib/supabase"
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { name, email } = body ?? {}
+    const { name, email, phone } = body ?? {}
 
-    console.log("[API:/api/lead] receive", { name, email })
+    console.log("[API:/api/lead] receive", { name, email, phone })
 
-    if (!name || !email) {
+    if (!name || !email || !phone) {
       console.warn("[API:/api/lead] validation_failed")
       return NextResponse.json({ ok: false, error: "INVALID_INPUT" }, { status: 400 })
     }
@@ -19,7 +19,8 @@ export async function POST(req: NextRequest) {
       .insert([
         {
           name: name.trim(),
-          email: email.trim().toLowerCase()
+          email: email.trim().toLowerCase(),
+          phone: phone.trim()
         }
       ])
       .select()

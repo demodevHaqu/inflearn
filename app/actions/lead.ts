@@ -11,21 +11,23 @@ export interface LeadSubmitResult {
  * 강의 신청 정보를 Supabase 데이터베이스에 저장하는 서버 액션
  * @param name - 신청자 이름
  * @param email - 신청자 이메일
+ * @param phone - 신청자 전화번호
  */
 export async function submitLead(
   name: string,
-  email: string
+  email: string,
+  phone: string
 ): Promise<LeadSubmitResult> {
   // 핵심 로그: 서버 액션 시작
-  console.log('[ServerAction:submitLead] 시작', { name, email })
+  console.log('[ServerAction:submitLead] 시작', { name, email, phone })
 
   try {
     // 입력값 검증
-    if (!name || !email) {
-      console.warn('[ServerAction:submitLead] 입력값 누락', { name, email })
+    if (!name || !email || !phone) {
+      console.warn('[ServerAction:submitLead] 입력값 누락', { name, email, phone })
       return {
         success: false,
-        error: '이름과 이메일을 모두 입력해주세요.',
+        error: '이름, 이메일, 전화번호를 모두 입력해주세요.',
       }
     }
 
@@ -36,6 +38,16 @@ export async function submitLead(
       return {
         success: false,
         error: '올바른 이메일 형식이 아닙니다.',
+      }
+    }
+
+    // 전화번호 형식 검증 (한국 전화번호 형식)
+    const phoneRegex = /^01[0-9]-\d{3,4}-\d{4}$/
+    if (!phoneRegex.test(phone)) {
+      console.warn('[ServerAction:submitLead] 전화번호 형식 오류', { phone })
+      return {
+        success: false,
+        error: '올바른 전화번호 형식이 아닙니다. (예: 010-1234-5678)',
       }
     }
 
@@ -63,7 +75,8 @@ export async function submitLead(
       .insert([
         {
           name: name.trim(),
-          email: email.trim().toLowerCase()
+          email: email.trim().toLowerCase(),
+          phone: phone.trim()
         }
       ])
       .select()
@@ -90,6 +103,7 @@ export async function submitLead(
       id: data?.[0]?.id,
       name,
       email,
+      phone,
     })
 
     return {
@@ -101,6 +115,7 @@ export async function submitLead(
       error: error instanceof Error ? error.message : String(error),
       name,
       email,
+      phone,
     })
 
     return {
