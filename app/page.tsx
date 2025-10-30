@@ -6,6 +6,7 @@ import { CategoryNav } from "@/components/category-nav"
 import { FeaturedBanner } from "@/components/featured-banner"
 import { CourseSection } from "@/components/course-section"
 import { getCoursesByCategory } from "@/lib/mock-data"
+ 
 
 // ============================================================================
 // 홈페이지 컴포넌트
@@ -63,6 +64,8 @@ export default function Home() {
         description="부담없이 시작하는 무료 강의" 
         courses={free} 
       />
+
+      
 
       {/* ====================================================================
           푸터 영역

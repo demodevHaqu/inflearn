@@ -4,6 +4,7 @@ import AnalyticsClient from '@/components/analytics'
 import FontLogger from '@/components/font-logger'
 import { Toaster } from 'sonner'
 import './globals.css'
+ 
 
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
