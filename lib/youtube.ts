@@ -57,18 +57,50 @@ export async function getChannelVideos(maxResults: number = 10): Promise<YouTube
     }
 
     const playlistData = await playlistResponse.json()
-    console.log('[YouTube API] 영상 개수:', playlistData.items?.length || 0)
+    const totalItems = playlistData.items?.length || 0
+    console.log('[YouTube API] 영상 개수:', totalItems)
 
-    const videos: YouTubeVideo[] = playlistData.items.map((item: any) => ({
+    if (!playlistData.items || totalItems === 0) {
+      console.warn('[YouTube API] 플레이리스트에 영상이 없습니다')
+      return []
+    }
+
+    const candidateVideos: YouTubeVideo[] = playlistData.items.map((item: any) => ({
       id: item.snippet.resourceId.videoId,
       title: item.snippet.title,
       description: item.snippet.description,
-      thumbnail: item.snippet.thumbnails.high.url,
+      thumbnail: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
       publishedAt: item.snippet.publishedAt,
     }))
 
-    console.log('[YouTube API] 영상 목록 가져오기 완료:', videos.length)
-    return videos
+    // 임베드가 차단된 영상(Private, embeddable=false) 제외
+    const ids = candidateVideos.map((v) => v.id).filter(Boolean)
+    const idsParam = ids.join(',')
+    console.log('[YouTube API] 임베드 가능 여부 확인할 ID 수:', ids.length)
+
+    const statusResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=status&id=${idsParam}&key=${YOUTUBE_API_KEY}`
+    )
+    if (!statusResponse.ok) {
+      console.error('[YouTube API] 상태 조회 실패:', statusResponse.status)
+      // 상태 조회 실패 시 후보 목록 그대로 반환 (후단에서 실패 시 플레이어에서만 미노출될 수 있음)
+      return candidateVideos
+    }
+
+    const statusData = await statusResponse.json()
+    const embeddableSet = new Set<string>()
+    for (const item of statusData.items || []) {
+      const embeddable = item?.status?.embeddable
+      const privacy = item?.status?.privacyStatus
+      if (embeddable && privacy === 'public') {
+        embeddableSet.add(item.id)
+      }
+    }
+
+    const filtered = candidateVideos.filter((v) => embeddableSet.has(v.id))
+    console.log('[YouTube API] 임베드 가능한 영상 수:', filtered.length)
+
+    return filtered
 
   } catch (error) {
     console.error('[YouTube API] 에러 발생:', error)
