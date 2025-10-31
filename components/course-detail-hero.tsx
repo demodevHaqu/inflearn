@@ -1,9 +1,8 @@
 import { Star, Users, Clock, Award, Globe, BarChart } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { YouTubePlayer } from "@/components/youtube-player"
 import type { Course } from "@/lib/types"
+import { CoursePaymentCard } from "@/components/course-payment-card"
 
 interface CourseDetailHeroProps {
   course: Course
@@ -92,47 +91,7 @@ export function CourseDetailHero({ course, youtubeVideoId }: CourseDetailHeroPro
 
           {/* 오른쪽: 수강 신청 카드 */}
           <div className="lg:sticky lg:top-20 lg:self-start">
-            <Card className="overflow-hidden">
-              <div className="relative aspect-video bg-muted">
-                <img
-                  src={course.thumbnail}
-                  alt={course.title}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-3 mb-2">
-                    {course.discount && (
-                      <Badge variant="destructive" className="text-base">
-                        {course.discount}
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold">{course.price}</span>
-                    {course.originalPrice && (
-                      <span className="text-lg text-muted-foreground line-through">
-                        {course.originalPrice}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <Button size="lg" className="w-full text-lg">
-                    {course.price === '무료' ? '무료 수강 신청' : '수강 신청'}
-                  </Button>
-                  <Button size="lg" variant="outline" className="w-full">
-                    장바구니
-                  </Button>
-                </div>
-
-                <div className="mt-4 text-center text-sm text-muted-foreground">
-                  30일 환불 보장
-                </div>
-              </div>
-            </Card>
+            <CoursePaymentCard course={course} />
           </div>
         </div>
       </div>
